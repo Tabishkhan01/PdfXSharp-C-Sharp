@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.3\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -75,11 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="IPdfDocument.cs" />
+    <Compile Include="PdfBookmarkCollection.cs" />
+    <Compile Include="PdfDocument - Copy.cs" />
     <Compile Include="PdfDocument.cs" />
     <Compile Include="PdfFont.cs" />
     <Compile Include="PdfImage.cs" />
-    <Compile Include="PdfPage.cs" />
     <Compile Include="PdfReader.cs" />
     <Compile Include="PdfText.cs" />
     <Compile Include="PdfTextExtractor.cs" />

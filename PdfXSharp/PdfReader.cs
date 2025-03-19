@@ -1,6 +1,7 @@
 ﻿using PdfXSharp;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -13,42 +14,28 @@ public class PdfReader
         PdfDocument document = new PdfDocument();
         try
         {
-            PdfTextExtractor textExtractor = new PdfTextExtractor();
-
-            document = textExtractor.PdfTextExtract(pdfPath);
-
             byte[] pdfBytes = File.ReadAllBytes(pdfPath);
             string rawContent = Encoding.ASCII.GetString(pdfBytes);
-
-            // Step 1: Decompress streams (if possible)
             string decompressedContent = DecompressFlateStreams(pdfBytes, rawContent);
+            int pagecount = Regex.Matches(decompressedContent, @"/Type\s*/Page\b").Count;
+            
+            PdfTextExtractor textExtractor = new PdfTextExtractor();
+            document = textExtractor.ExtractText(pdfPath, pagecount);
 
-            // Step 2: Extract page count
-            document.PdfPages = Regex.Matches(decompressedContent, @"/Type\s*/Page\b").Count;
-
-            // Step 3: Extract page sizes
             var mediaBoxMatches = Regex.Matches(decompressedContent, @"/MediaBox\s*\[\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\]");
-            foreach (Match match in mediaBoxMatches)
+           
+            for (int i = 0; i < mediaBoxMatches.Count && i < document.Pages.Count; i++)
             {
-                float width = float.Parse(match.Groups[3].Value);
-                float height = float.Parse(match.Groups[4].Value);
-                document.PageSizes.Add(((int)width, (int)height));
-            }
+                Match match = mediaBoxMatches[i];
 
-            // Step 4: Extract text (improved regex)
-            var textMatches = Regex.Matches(decompressedContent, @"(?:\((.*?)\)|<([0-9A-Fa-f]+)>)\s*T[Jj]");
-            foreach (Match match in textMatches)
-            {
-                string text = "";
-                if (!string.IsNullOrEmpty(match.Groups[1].Value))
+                if (match.Success)
                 {
-                    text = Regex.Unescape(match.Groups[1].Value); // Handle escaped chars like \(, \n
+                    float width = float.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
+                    float height = float.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
+
+                    document.Pages[i].Width = (int)width;
+                    document.Pages[i].Height = (int)height;
                 }
-                else if (!string.IsNullOrEmpty(match.Groups[2].Value))
-                {
-                    text = HexToString(match.Groups[2].Value);
-                }
-                document.PageTexts.Add(text);
             }
 
         }
@@ -59,7 +46,6 @@ public class PdfReader
         return document;
     }
 
-    // Helper: Decompress FlateDecode streams
     private static string DecompressFlateStreams(byte[] pdfBytes, string rawContent)
     {
         StringBuilder decompressedContent = new StringBuilder(rawContent);
@@ -70,11 +56,11 @@ public class PdfReader
         Encoding latin1Encoding;
         try
         {
-            latin1Encoding = Encoding.GetEncoding(28591); // Code page for ISO-8859-1
+            latin1Encoding = Encoding.GetEncoding(28591); 
         }
         catch
         {
-            // Fallback to ASCII if Latin-1 is unavailable
+           
             latin1Encoding = Encoding.ASCII;
         }
 
@@ -150,23 +136,5 @@ public class PdfReader
         }
     }
 
-    // Helper: Convert hex to text
-    private static string HexToString(string hex)
-    {
-        hex = hex.Replace(" ", "");
-        try
-        {
-            byte[] bytes = new byte[hex.Length / 2];
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
-            }
-            return Encoding.ASCII.GetString(bytes);
-        }
-        catch
-        {
-            return "";
-        }
-    }
-
+    
 }
