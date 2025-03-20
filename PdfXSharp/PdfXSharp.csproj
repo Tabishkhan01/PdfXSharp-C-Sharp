@@ -81,13 +81,10 @@
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PdfBookmarkCollection.cs" />
-    <Compile Include="PdfDocument - Copy.cs" />
     <Compile Include="PdfDocument.cs" />
     <Compile Include="PdfError.cs" />
     <Compile Include="PdfException.cs" />
     <Compile Include="PdfFile.cs" />
-    <Compile Include="PdfFont.cs" />
-    <Compile Include="PdfImage.cs" />
     <Compile Include="PdfInformation.cs" />
     <Compile Include="PdfLibrary.cs" />
     <Compile Include="PdfMatch.cs" />
@@ -103,13 +100,9 @@
     <Compile Include="PdfRectangle.cs" />
     <Compile Include="PdfResolveEventHandler.cs" />
     <Compile Include="PdfResolver.cs" />
-    <Compile Include="PdfReader.cs" />
     <Compile Include="PdfRenderFlags.cs" />
     <Compile Include="PdfRotation.cs" />
-    <Compile Include="PdfText.cs" />
-    <Compile Include="PdfTextExtractor.cs" />
     <Compile Include="PdfTextSpan.cs" />
-    <Compile Include="PdfWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StreamManager.cs" />
   </ItemGroup>
