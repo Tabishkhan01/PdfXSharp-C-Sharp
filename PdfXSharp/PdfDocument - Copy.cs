@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PdfXSharp
 {
-    public class PdfDocument
+    public class PdfDocument1
     {
         public  int PdfPagesCount { get; set; }
         public List<PdfPage> Pages { get; set; } = new List<PdfPage>();

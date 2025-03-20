@@ -9,42 +9,42 @@ using System.Text.RegularExpressions;
 
 public class PdfReader
 {
-    public static PdfDocument Open(string pdfPath)
-    {
-        PdfDocument document = new PdfDocument();
-        try
-        {
-            byte[] pdfBytes = File.ReadAllBytes(pdfPath);
-            string rawContent = Encoding.ASCII.GetString(pdfBytes);
-            string decompressedContent = DecompressFlateStreams(pdfBytes, rawContent);
-            int pagecount = Regex.Matches(decompressedContent, @"/Type\s*/Page\b").Count;
+    //public static PdfDocument Open(string pdfPath)
+    //{
+    //    PdfDocument document = new PdfDocument();
+    //    try
+    //    {
+    //        byte[] pdfBytes = File.ReadAllBytes(pdfPath);
+    //        string rawContent = Encoding.ASCII.GetString(pdfBytes);
+    //        string decompressedContent = DecompressFlateStreams(pdfBytes, rawContent);
+    //        int pagecount = Regex.Matches(decompressedContent, @"/Type\s*/Page\b").Count;
             
-            PdfTextExtractor textExtractor = new PdfTextExtractor();
-            document = textExtractor.ExtractText(pdfPath, pagecount);
+    //        PdfTextExtractor textExtractor = new PdfTextExtractor();
+    //        document = textExtractor.ExtractText(pdfPath, pagecount);
 
-            var mediaBoxMatches = Regex.Matches(decompressedContent, @"/MediaBox\s*\[\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\]");
+    //        var mediaBoxMatches = Regex.Matches(decompressedContent, @"/MediaBox\s*\[\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\]");
            
-            for (int i = 0; i < mediaBoxMatches.Count && i < document.Pages.Count; i++)
-            {
-                Match match = mediaBoxMatches[i];
+    //        for (int i = 0; i < mediaBoxMatches.Count && i < document.Pages.Count; i++)
+    //        {
+    //            Match match = mediaBoxMatches[i];
 
-                if (match.Success)
-                {
-                    float width = float.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
-                    float height = float.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
+    //            if (match.Success)
+    //            {
+    //                float width = float.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
+    //                float height = float.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
 
-                    document.Pages[i].Width = (int)width;
-                    document.Pages[i].Height = (int)height;
-                }
-            }
+    //                document.Pages[i].Width = (int)width;
+    //                document.Pages[i].Height = (int)height;
+    //            }
+    //        }
 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-        return document;
-    }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"Error: {ex.Message}");
+    //    }
+    //    return document;
+    //}
 
     private static string DecompressFlateStreams(byte[] pdfBytes, string rawContent)
     {

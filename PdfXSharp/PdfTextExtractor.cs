@@ -1,4 +1,5 @@
-﻿using PdfiumViewer;
+﻿
+using PdfXSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,31 +10,52 @@ using System.Xml.Serialization;
 
 public class PdfTextExtractor
 {
-    public PdfDocument ExtractText(string pdfPath)
+    public string ExtractText(string pdfPath)
     {
-        PdfDocument document = new PdfDocument();
-
         try
         {
             using (PdfDocument pdf = PdfDocument.Load(pdfPath))
             {
                 int totalPages = pdf.PageCount;
-                document.PdfPagesCount = totalPages;
-
-                for (int page = 0; page < totalPages; page++)  // PdfiumViewer uses 0-based indexing
+                for (int page = 0; page < totalPages; page++)  
                 {
                     string extractedText = pdf.GetPdfText(page);
-                    document.Pages.Add(new PdfPage { PageNumber = page + 1, Text = extractedText });
+                    
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error extracting text: {ex.Message}");
+            
         }
 
-        return document;
+        return "";
     }
+    //public PdfDocument ExtractText(string pdfPath)
+    //{
+    //    PdfDocument document = new PdfDocument();
+
+    //    try
+    //    {
+    //        //using (PdfDocument pdf = PdfDocument.Load(pdfPath))
+    //        //{
+    //        //    int totalPages = pdf.PageCount;
+    //        //    document.PdfPagesCount = totalPages;
+
+    //        //    for (int page = 0; page < totalPages; page++)  
+    //        //    {
+    //        //        string extractedText = pdf.GetPdfText(page);
+    //        //        document.Pages.Add(new PdfPage { PageNumber = page + 1, Text = extractedText });
+    //        //    }
+    //        //}
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"Error extracting text: {ex.Message}");
+    //    }
+
+    //    return document;
+    //}
 
     public static string ExportToJson(PdfDocument document)
     {
