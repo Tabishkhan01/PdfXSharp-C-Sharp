@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -35,12 +36,32 @@ namespace PdfXSharp
         /// </summary>
         public void ImportPage(PdfFile sourceFile, int pageIndex)
         {
-            if (sourceFile == null)
-                throw new ArgumentNullException(nameof(sourceFile));
+            // 1. Explicitly format the page range (e.g., "1-1" for page 1)
+            string pagerange = $"{pageIndex + 1}-{pageIndex + 1}";
 
-            NativeMethods.FPDF_ImportPages(_document, sourceFile._document, "1", pageIndex);
-            // Note: "1" specifies all pages, but since we're importing a single page, adjust parameters as needed.
+            // 2. Get the current page count of the DESTINATION document
+            int insertIndex = NativeMethods.FPDF_GetPageCount(_document);
+
+            // 3. Import the page into the destination at the correct position
+            bool success = NativeMethods.FPDF_ImportPages(
+                _document,
+                sourceFile._document,
+                pagerange,
+                insertIndex // Insert after existing pages (append)
+            );
+
+            if (!success)
+                throw new Win32Exception("Failed to import page.");
         }
+        //public void ImportPage(PdfFile sourceFile, int pageIndex)
+        //{
+        //    if (sourceFile == null)
+        //        throw new ArgumentNullException(nameof(sourceFile));
+
+        //    string pagerange = (pageIndex + 1).ToString();
+        //    NativeMethods.FPDF_ImportPages(_document, sourceFile._document, pagerange, pageIndex);
+        //    // Note: "1" specifies all pages, but since we're importing a single page, adjust parameters as needed.
+        //}
 
         public PdfFile(Stream stream, string password)
         {
