@@ -33,23 +33,37 @@ namespace PdfXtester
             // Ensure the output directory exists
             Directory.CreateDirectory(outputFolder);
 
+            //using (var document = PdfDocument.Load(inputPath))
+            //{
+            //    int totalPages = document.PageCount;
+            //    for (int i = 0; i < totalPages; i++)
+            //    {
+            //        using (var singlePageDoc = PdfDocument.Load(inputPath))
+            //        {
+            //            for (int j = totalPages - 1; j >= 0; j--)
+            //            {
+            //                if (j != i)
+            //                {
+            //                    singlePageDoc.DeletePage(j);
+            //                }
+            //            }   
+
+            //            string outputPdfPath = Path.Combine(outputFolder, $"Page_{i + 1}.pdf");
+            //            singlePageDoc.Save(outputPdfPath);
+            //        }
+            //    }
+            //}
+            Directory.CreateDirectory(outputFolder);
+
             using (var document = PdfDocument.Load(inputPath))
             {
                 int totalPages = document.PageCount;
-                Console.WriteLine($"Total Pages: {totalPages}");
 
                 for (int i = 0; i < totalPages; i++)
                 {
-                    using (var singlePageDoc = PdfDocument.Load(inputPath))
+                    using (var singlePageDoc = PdfDocument.CreateNew())
                     {
-                        for (int j = totalPages - 1; j >= 0; j--)
-                        {
-                            if (j != i)
-                            {
-                                singlePageDoc.DeletePage(j);
-                            }
-                        }
-                        
+                        singlePageDoc.AddPage(document, i);
                         string outputPdfPath = Path.Combine(outputFolder, $"Page_{i + 1}.pdf");
                         singlePageDoc.Save(outputPdfPath);
                     }

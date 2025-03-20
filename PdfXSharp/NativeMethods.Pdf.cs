@@ -25,6 +25,20 @@ namespace PdfXSharp
                 Imports.FPDF_AddRef();
             }
         }
+        public static IntPtr FPDF_CreateNewDocument()
+        {
+            lock (LockString)
+            {
+               return Imports.FPDF_CreateNewDocument();
+            }
+        }
+        public static bool FPDF_ImportPages(IntPtr destDoc, IntPtr srcDoc, [MarshalAs(UnmanagedType.LPStr)] string pageRange, int index)
+        {
+            lock (LockString)
+            {
+               return Imports.FPDF_ImportPages(destDoc, srcDoc,  pageRange,  index);
+            }
+        }
 
         public static void FPDF_Release()
         {

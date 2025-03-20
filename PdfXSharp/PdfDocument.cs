@@ -22,6 +22,27 @@ namespace PdfXSharp
         private PdfFile _file;
         private readonly List<SizeF> _pageSizes;
 
+        public static PdfDocument CreateNew()
+        {
+            return new PdfDocument();
+        }
+        public PdfDocument()
+        {
+            _file = new PdfFile(); // Requires PdfFile to support new documents
+            _pageSizes = new List<SizeF>();
+            PageSizes = new ReadOnlyCollection<SizeF>(_pageSizes);
+        }
+
+        public void AddPage(PdfDocument sourceDocument, int pageIndex)
+        {
+            if (sourceDocument == null)
+                throw new ArgumentNullException(nameof(sourceDocument));
+            if (pageIndex < 0 || pageIndex >= sourceDocument.PageCount)
+                throw new ArgumentOutOfRangeException(nameof(pageIndex));
+
+            _file.ImportPage(sourceDocument._file, pageIndex);
+            _pageSizes.Add(sourceDocument.PageSizes[pageIndex]);
+        }
         /// <summary>
         /// Initializes a new instance of the PdfDocument class with the provided path.
         /// </summary>
@@ -117,10 +138,7 @@ namespace PdfXSharp
         {
             return Load(stream, null);
         }
-        public static PdfDocument CreateNew()
-        {
-            return PdfDocument.CreateNew(); 
-        }
+      
 
         /// <summary>
         /// Initializes a new instance of the PdfDocument class with the provided stream.

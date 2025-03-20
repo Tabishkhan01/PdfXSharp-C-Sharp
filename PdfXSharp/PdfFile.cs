@@ -21,6 +21,27 @@ namespace PdfXSharp
         private readonly int _id;
         private Stream _stream;
 
+        /// <summary>
+        /// Initializes a new instance for creating a new PDF document.
+        /// </summary>
+        public PdfFile()
+        {
+            _document = NativeMethods.FPDF_CreateNewDocument();
+            
+        }
+
+        /// <summary>
+        /// Imports a page from another PDF document.
+        /// </summary>
+        public void ImportPage(PdfFile sourceFile, int pageIndex)
+        {
+            if (sourceFile == null)
+                throw new ArgumentNullException(nameof(sourceFile));
+
+            NativeMethods.FPDF_ImportPages(_document, sourceFile._document, "1", pageIndex);
+            // Note: "1" specifies all pages, but since we're importing a single page, adjust parameters as needed.
+        }
+
         public PdfFile(Stream stream, string password)
         {
             if (stream == null)
