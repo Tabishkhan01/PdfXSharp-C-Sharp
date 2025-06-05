@@ -2,7 +2,7 @@ name: Generate Docs with GitDocify
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build:
